@@ -1,0 +1,79 @@
+@font-face {
+    font-family: 'DSEG14Modern';
+    src: url('fonts-DSEG_v046/DSEG14-Modern/DSEG14Modern-Regular.ttf') format('truetype'),
+         url('fonts-DSEG_v046/DSEG14-Modern/DSEG14Modern-Regular.woff') format('woff'),
+         url('fonts-DSEG_v046/DSEG14-Modern/DSEG14Modern-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'DSEGWeather';
+    src: url('fonts-DSEG_v046/DSEGWeather/DSEGWeather.ttf') format('truetype'),
+         url('fonts-DSEG_v046/DSEGWeather/DSEGWeather.woff') format('woff'),
+         url('fonts-DSEG_v046/DSEGWeather/DSEGWeather.woff2') format('woff2');
+}
+
+body {
+    background-color: black;
+    color: white;
+    font-family: 'DSEG14Modern', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.utc-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    text-align: center;
+    width: 100%;
+}
+
+.clock-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clock {
+    font-family: 'DSEG14Modern', sans-serif;
+    color: #2daae1;
+    font-size: calc(2.5vw + 2.5vh);
+}
+
+.clock.utc {
+    color: red;
+    font-size: calc(5vw + 5vh);
+}
+
+.description {
+    font-family: 'DSEG14Modern', sans-serif;
+    font-size: calc(1vw + 1vh);
+    color: #aaa;
+    text-align: center;
+}
+
+.weather-icon {
+    font-family: 'DSEGWeather', sans-serif;
+}
+
+
+.clock.date {
+    text-align: center;
+    color: red;
+    font-size: calc(3.5vw + 3.5vh);
+    width: 100%;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>World Clock</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateClocks() {
+                const DateTime = luxon.DateTime;
+                const time = DateTime.now().toUTC();
+                const date = time.toFormat('dd/MM/yyyy');
+                document.getElementById('date').innerText = date;
+                document.getElementById('clock1').innerText = time.toFormat('HH:mm:ss');
+
+                const timezones = [
+                    { id: "clock2", zone: "America/Cayman", description: "George Town, Cayman Islands", lat: 19.3133, lon: -81.2546 },
+                    { id: "clock3", zone: "America/Nassau", description: "Nassau, Bahamas", lat: 25.0343, lon: -77.3963 },
+                    { id: "clock4", zone: "America/Tortola", description: "Road Town, British Virgin Islands", lat: 18.4286, lon: -64.6185 },
+                    { id: "clock5", zone: "Atlantic/Bermuda", description: "Hamilton, Bermuda", lat: 32.2949, lon: -64.7814 },
+                    { id: "clock6", zone: "Europe/Isle_of_Man", description: "Douglas, Isle of Man<br>St. Helier, Jersey<br>St. Peter Port, Guernsey", lat: 54.1500, lon: -4.4800 },
+                    { id: "clock7", zone: "Europe/Malta", description: "Valletta, Malta", lat: 35.8997, lon: 14.5147 },
+                    { id: "clock8", zone: "America/Barbados", description: "Bridgetown, Barbados", lat: 13.0975, lon: -59.6167 },
+                    { id: "clock9", zone: "America/Jamaica", description: "Kingston, Jamaica", lat: 17.9714, lon: -76.7936 },
+                    { id: "clock10", zone: "America/Port_of_Spain", description: "Port of Spain, Trinidad & Tobago", lat: 10.6678, lon: -61.5189 }
+                ];
+
+                timezones.forEach(tz => {
+                    const localTime = time.setZone(tz.zone).toFormat('HH:mm');
+                    const zoneAbbr = time.setZone(tz.zone).toFormat('ZZZZ');
+                    const correctAbbr = (tz.zone === "Europe/Malta" && zoneAbbr === "GMT+1") ? "CET" : zoneAbbr;
+
+                    document.getElementById(tz.id).innerText = `${localTime} ${correctAbbr}`;
+                });
+            }
+
+            function updateWeather() {
+                const timezones = [
+                    { id: "clock2", zone: "America/Cayman", description: "George Town, Cayman Islands", lat: 19.3133, lon: -81.2546 },
+                    { id: "clock3", zone: "America/Nassau", description: "Nassau, Bahamas", lat: 25.0343, lon: -77.3963 },
+                    { id: "clock4", zone: "America/Tortola", description: "Road Town, British Virgin Islands", lat: 18.4286, lon: -64.6185 },
+                    { id: "clock5", zone: "Atlantic/Bermuda", description: "Hamilton, Bermuda", lat: 32.2949, lon: -64.7814 },
+                    { id: "clock6", zone: "Europe/Isle_of_Man", description: "Douglas, Isle of Man & CI", lat: 54.1500, lon: -4.4800 },
+                    { id: "clock7", zone: "Europe/Malta", description: "Valletta, Malta", lat: 35.8997, lon: 14.5147 },
+                    { id: "clock8", zone: "America/Barbados", description: "Bridgetown, Barbados", lat: 13.0975, lon: -59.6167 },
+                    { id: "clock9", zone: "America/Jamaica", description: "Kingston, Jamaica", lat: 17.9714, lon: -76.7936 },
+                    { id: "clock10", zone: "America/Port_of_Spain", description: "Port of Spain, Trinidad & Tobago", lat: 10.6678, lon: -61.5189 }
+                ];
+
+                timezones.forEach(tz => {
+                    fetchWeather(tz.lat, tz.lon).then(weather => {
+                        const temperature = weather.current_weather.temperature;
+                        const weatherIcon = getWeatherIcon(weather.current_weather.weathercode);
+                        document.getElementById(tz.id).nextElementSibling.innerHTML = `${tz.description} <br>${temperature}°C <span class="weather-icon">${weatherIcon}</span>`;
+                    }).catch(error => console.error(error));
+                });
+            }
+
+            function fetchWeather(lat, lon) {
+                return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+                    .then(response => response.json());
+            }
+
+            function getWeatherIcon(weatherCode) {
+                const icons = {
+                    1: '1', // Sun
+                    2: '2', // Cloud
+                    3: '3', // Rain
+                    4: '4', // Hard Rain
+                    5: '5', // Snow
+                    6: '6', // Thunder Rain
+                    7: '7', // Thunder Hard Rain
+                    8: '8', // Thunder
+                    9: '9'  // Sun and Cloud
+                };
+                return icons[weatherCode] || '1';
+            }
+
+            updateClocks();
+            updateWeather();
+            setInterval(updateClocks, 1000); // Update time every second
+            setInterval(updateWeather, 1000 * 60 * 15); // Update weather every 15 minutes
+        });
+    </script>
+</head>
+<body>
+    <div id="date" class="clock date"></div>
+    <div class="utc-wrapper">
+        <div id="clock1" class="clock utc"></div>
+        <div class="description">Coordinated Universal Time (UTC)</div>
+    </div>
+    <div class="grid-container">
+        <div class="clock-wrapper">
+            <div id="clock2" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock3" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock4" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock5" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock6" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock7" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock8" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock9" class="clock"></div>
+            <div class="description"></div>
+        </div>
+        <div class="clock-wrapper">
+            <div id="clock10" class="clock"></div>
+            <div class="description"></div>
+        </div>
+    </div>
+</body>
+</html>
